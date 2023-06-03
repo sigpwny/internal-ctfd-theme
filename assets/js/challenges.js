@@ -163,7 +163,7 @@ Alpine.data("ChallengeBoard", () => ({
     this.loaded = true;
 
     if (window.location.hash) {
-      let chalHash = decodeURIComponent(window.location.hash.substring(1));
+      let chalHash = decodeURIComponent(window.location.hash.substring(1).split('/').pop());
       let idx = chalHash.lastIndexOf("-");
       if (idx >= 0) {
         let pieces = [chalHash.slice(0, idx), chalHash.slice(idx + 1)];
@@ -186,9 +186,19 @@ Alpine.data("ChallengeBoard", () => ({
 
     try {
       const f = CTFd.config.themeSettings.challenge_category_order;
+      const topCategory = window.init.topCategory;
       if (f) {
         const getSort = new Function(`return (${f})`);
         categories.sort(getSort());
+        categories.sort((a, b) => { 
+          if (a === topCategory) {
+            return -1;
+          } else if (b === topCategory) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
       }
     } catch (error) {
       // Ignore errors with theme category sorting
@@ -198,7 +208,21 @@ Alpine.data("ChallengeBoard", () => ({
 
     return categories;
   },
-
+  getTabs() {
+    const categories = this.getCategories();
+    let tabs = [{ name: "All", categories: categories}]
+    try {
+      const f = CTFd.config.themeSettings.category_tabs;
+      if (f) {
+        const getTabs = new Function(`return (${f})`)();
+        tabs = getTabs(categories);
+      }
+    } catch (error) {
+      console.log("Error running category_tabs function");
+      console.log(error);
+    }
+    return tabs
+  },
   getChallenges(category) {
     let challenges = this.challenges;
 
@@ -225,7 +249,8 @@ Alpine.data("ChallengeBoard", () => ({
     this.challenges = await CTFd.pages.challenges.getChallenges();
   },
 
-  async loadChallenge(challengeId) {
+  async loadChallenge(challengeId, tabDetail) {
+    console.log(challengeId, tabDetail)
     await CTFd.pages.challenge.displayChallenge(challengeId, challenge => {
       challenge.data.view = addTargetBlank(challenge.data.view);
       Alpine.store("challenge").data = challenge.data;
@@ -239,12 +264,16 @@ Alpine.data("ChallengeBoard", () => ({
           "hidden.bs.modal",
           event => {
             // Remove location hash
-            history.replaceState(null, null, " ");
+            history.replaceState(null, null, `#${window.location.hash.substring(1).split('/')[0]}`);
           },
           { once: true }
         );
         modal.show();
-        history.replaceState(null, null, `#${challenge.data.name}-${challengeId}`);
+
+        if (tabDetail !== undefined) {
+          // We came from a click, not a refresh
+          history.replaceState(null, null, `#${tabDetail.name}/${challenge.data.name}-${challengeId}`);
+        }
       });
     });
   },

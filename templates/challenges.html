@@ -35,33 +35,60 @@
       </div>
 
       <div x-show="loaded">
-        <template x-for="(category, idx) in getCategories()" :key="idx">
-          <div class="pt-5">
-            <div class="category-header mb-3">
-              <h3 x-text="category"></h3>
-            </div>
-
-            <div class="category-challenges d-flex flex-column">
-              <div class="challenges-row row">
-                <template x-for="(c, idx) in getChallenges(category)" :key="c.id">
-                  <div class="col-sm-6 col-md-4 col-lg-3">
-                    <button
-                        class="challenge-button btn btn-dark w-100 text-truncate my-3"
-                        :class="c.solved_by_me ? 'challenge-solved' : ''"
-                        :value="c.id" @click="loadChallenge(c.id)"
-                    >
-
-                      <div class="challenge-inner my-3">
-                        <p x-text="c.name"></p>
-                        <span x-text="c.value"></span>
+        <div x-data="{ tab: window.location.hash ? decodeURI(window.location.hash.substring(1).split('/')[0]) : 'Meetings' }" id="tab_wrapper">
+          <!-- The tabs navigation -->
+          <nav class="d-flex flex-row justify-content-start">
+            <template x-for="(tabDetails, idx) in getTabs()" :key="idx">
+              <div class="px-3">
+                <a :class="{ 'btn btn-outline-secondary active': tab === tabDetails.name, 'btn btn-outline-secondary': tab !== tabDetails.name }" @click.prevent="tab = tabDetails.name; window.location.hash = tabDetails.name" href="#" x-text="tabDetails.name"></a>
+              </div>
+            </template>
+          </nav>
+        
+          <!-- The tabs content -->
+          <template x-for="(tabDetails, idx) in getTabs()">
+            <div x-show="tab === tabDetails.name" class="row">
+              <!-- The left sidebar for the tab -->
+              <div class="pt-5 d-none d-md-block col-3 sticky-top category-sidebar">
+                <template x-for="(category, idx) in tabDetails.categories" :key="idx">
+                  <div class="category-header pb-2 mr-5">
+                    <a x-text="category" :href="`#${tabDetails.name}/${category}`"></a>
+                  </div>
+                </template>
+              </div>
+              <!-- The main content of the tab -->
+              <div class="col-9">
+                <template x-for="(category, idx) in tabDetails.categories" class="category-content" :key="idx">
+                  <div class="pt-5" :id="`${tabDetails.name}/${category}`">
+                    <div class="category-header mb-3">
+                      <h3 x-text="category"></h3>
+                    </div>
+                    
+                    <div class="category-challenges d-flex flex-column">
+                      <div class="challenges-row row">
+                        <template x-for="(c, idx) in getChallenges(category)" :key="c.id">
+                          <div class="col-sm-6 col-md-4 col-lg-3">
+                            <button
+                            class="challenge-button btn btn-dark w-100 text-truncate my-3"
+                            :class="c.solved_by_me ? 'challenge-solved' : ''"
+                            :value="c.id" @click="loadChallenge(c.id, tabDetails)"
+                            >
+                            
+                            <div class="challenge-inner my-3">
+                              <p x-text="c.name"></p>
+                              <span x-text="c.value"></span>
+                            </div>
+                          </button>
+                        </div>
+                      </template>
                       </div>
-                    </button>
+                    </div>
                   </div>
                 </template>
               </div>
             </div>
-          </div>
-        </template>
+          </template>
+        </div>
       </div>
     </div>
   </div>
