@@ -15,6 +15,13 @@ git subtree add --prefix CTFd/themes/core-beta git@github.com:CTFd/core-beta.git
 git subtree pull --prefix CTFd/themes/core-beta git@github.com:CTFd/core-beta.git main --squash
 ```
 
+### Local Development
+
+```bash
+yarn install 
+yarn dev # `yarn build` for a one time build
+```
+
 ## Todo
 
 - Document how we are using Vite
