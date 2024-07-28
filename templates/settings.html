@@ -53,7 +53,7 @@
 
                 <div class="mb-3">
                   <b>{{ form.language.label(class="form-label") }}</b>
-                  {{ form.language(class="form-control form-select", value=language) }}
+                  {{ form.language(class="form-select", value=language) }}
                 </div>
 
                 <hr>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="mb-3">
                   <b>{{ form.country.label(class="form-label") }}</b>
-                  {{ form.country(class="form-control form-select", value=country) }}
+                  {{ form.country(class="form-select", value=country) }}
                 </div>
 
                 <hr>
@@ -164,6 +164,11 @@
                   {{ form.expiration(class="form-control") }}
                 </div>
 
+                <div class="mb-3">
+                  <b>{{ form.description.label(class="form-label") }}</b>
+                  {{ form.description(class="form-control", rows="3") }}
+                </div>
+
                 <div class="row">
                   <div class="col">
                     {{ form.submit(class="btn btn-block btn-primary float-end px-4") }}
@@ -213,12 +218,13 @@
                   </div>
                 </div>
 
-                <table class="table table-striped">
+                <table class="table table-striped align-middle">
                   <thead>
                   <tr>
-                    <td class="text-center"><b>{% trans %}Created{% endtrans %}</b></td>
-                    <td><b>{% trans %}Expiration{% endtrans %}</b></td>
-                    <td><b>{% trans %}Delete{% endtrans %}</b></td>
+                    <th class="text-center">{% trans %}Created{% endtrans %}</th>
+                    <th>{% trans %}Expiration{% endtrans %}</th>
+                    <th>{% trans %}Description{% endtrans %}</th>
+                    <th>{% trans %}Delete{% endtrans %}</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -229,6 +235,9 @@
                       </td>
                       <td>
                         <span data-time="{{ token.expiration | isoformat }}"></span>
+                      </td>
+                      <td>
+                        <span>{{ token.description | default('', true) }}</span>
                       </td>
                       <td class="text-center">
                         <span

@@ -29,6 +29,9 @@ git subtree pull --prefix CTFd/themes/core-beta git@github.com:CTFd/core-beta.gi
 yarn install 
 yarn dev # `yarn build` for a one time build
 ```
+### Subtree Gotcha
+
+Make sure to use Merge Commits when dealing with the subtree here. For some reason Github's squash and commit uses the wrong line ending which causes issues with the subtree script: https://stackoverflow.com/a/47190256. 
 
 ## Todo
 

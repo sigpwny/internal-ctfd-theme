@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 import CTFd from "./index";
 
-import { Modal, Tab } from "bootstrap";
+import { Modal, Tab, Tooltip } from "bootstrap";
 import highlight from "./theme/highlight";
 
 function addTargetBlank(html) {
@@ -62,6 +62,9 @@ Alpine.data("Challenge", () => ({
   tab: null,
   solves: [],
   response: null,
+  share_url: null,
+  max_attempts: 0,
+  attempts: 0,
 
   async init() {
     highlight();
@@ -129,15 +132,40 @@ Alpine.data("Challenge", () => ({
           this.$dispatch("load-challenge", this.getNextId());
         });
       },
-      { once: true }
+      { once: true },
     );
     modal.hide();
+  },
+
+  async getShareUrl() {
+    let body = {
+      type: "solve",
+      challenge_id: this.id,
+    };
+    const response = await CTFd.fetch("/api/v1/shares", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    const data = await response.json();
+    const url = data["data"]["url"];
+    this.share_url = url;
+  },
+
+  copyShareUrl() {
+    navigator.clipboard.writeText(this.share_url);
+    let t = Tooltip.getOrCreateInstance(this.$el);
+    t.enable();
+    t.show();
+    setTimeout(() => {
+      t.hide();
+      t.disable();
+    }, 2000);
   },
 
   async submitChallenge() {
     this.response = await CTFd.pages.challenge.submitChallenge(
       this.id,
-      this.submission
+      this.submission,
     );
 
     await this.renderSubmissionResponse();
@@ -146,6 +174,11 @@ Alpine.data("Challenge", () => ({
   async renderSubmissionResponse() {
     if (this.response.data.status === "correct") {
       this.submission = "";
+    }
+
+    // Increment attempts counter
+    if (this.max_attempts > 0 && this.response.data.status != "already_solved") {
+      this.attempts += 1;
     }
 
     // Dispatch load-challenges event to call loadChallenges in the ChallengeBoard
@@ -226,7 +259,7 @@ Alpine.data("ChallengeBoard", () => ({
   getChallenges(category) {
     let challenges = this.challenges;
 
-    if (category) {
+    if (category !== null) {
       challenges = this.challenges.filter(challenge => challenge.category === category);
     }
 
@@ -266,7 +299,7 @@ Alpine.data("ChallengeBoard", () => ({
             // Remove location hash
             history.replaceState(null, null, `#${window.location.hash.substring(1).split('/')[0]}`);
           },
-          { once: true }
+          { once: true },
         );
         modal.show();
 

@@ -9,14 +9,21 @@ window.Alpine = Alpine;
 Alpine.data("SetupForm", () => ({
   init() {
     // Bind Enter on any input to clicking the Next button
-    this.$root.querySelectorAll("input").forEach(i =>
+    this.$root.querySelectorAll("input").forEach(i => {
       i.addEventListener("keypress", e => {
         if (e.key == "Enter") {
           e.preventDefault();
           e.target.closest(".tab-pane").querySelector("button[data-href]").click();
         }
-      })
-    );
+      });
+      i.addEventListener("change", e => {
+        if (e.target.checkValidity() === false) {
+          e.target.classList.add("input-filled-invalid");
+        } else {
+          e.target.classList.remove("input-filled-invalid");
+        }
+      });
+    });
 
     // Register storage listener for MLC integration
     window.addEventListener("storage", function (event) {
@@ -37,7 +44,7 @@ Alpine.data("SetupForm", () => ({
         !confirm(
           `This image file is larger than ${
             limit / 1000
-          }KB which may result in increased load times. Are you sure you'd like to use this file?`
+          }KB which may result in increased load times. Are you sure you'd like to use this file?`,
         )
       ) {
         e.target.value = "";
@@ -54,6 +61,7 @@ Alpine.data("SetupForm", () => ({
 
     inputs.forEach(e => {
       if (e.checkValidity() === false) {
+        e.classList.add("input-filled-invalid");
         valid_tab = false;
       }
     });
@@ -82,7 +90,7 @@ Alpine.data("SetupForm", () => ({
       let time_picker = document.querySelector(`#${datetime}-time`);
       let unix_time = dayjs(
         `${date_picker.value} ${time_picker.value}`,
-        "YYYY-MM-DD HH:mm"
+        "YYYY-MM-DD HH:mm",
       ).unix();
 
       if (isNaN(unix_time)) {
@@ -94,18 +102,17 @@ Alpine.data("SetupForm", () => ({
   },
 
   mlcSetup() {
-    let q = document.querySelector;
     let r = CTFd.config.urlRoot;
     let params = {
-      name: q("#ctf_name").value,
+      name: document.querySelector("#ctf_name").value,
       type: "jeopardy",
-      description: q("#ctf_description").value,
-      user_mode: q("#user_mode").value,
+      description: document.querySelector("#ctf_description").value,
+      user_mode: document.querySelector("[name=user_mode]:checked").value,
       event_url: window.location.origin + r,
       redirect_url: window.location.origin + r + "/redirect",
       integration_setup_url: window.location.origin + r + "/setup/integrations",
-      start: q("#start-preview").value,
-      end: q("#end-preview").value,
+      start: document.querySelector("#start-preview").value,
+      end: document.querySelector("#end-preview").value,
       platform: "CTFd",
       state: window.STATE,
     };
@@ -116,7 +123,7 @@ Alpine.data("SetupForm", () => ({
     }
     window.open(
       "https://www.majorleaguecyber.org/events/new?" + ret.join("&"),
-      "_blank"
+      "_blank",
     );
   },
 

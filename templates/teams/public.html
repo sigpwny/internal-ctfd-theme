@@ -79,11 +79,11 @@
     <div class="row">
       <div class="col-md-12">
         <h3>{% trans %}Members{% endtrans %}</h3>
-        <table class="table table-striped">
+        <table class="table table-striped align-middle">
           <thead>
           <tr>
-            <td><b>{% trans %}User Name{% trans %}</b></td>
-            <td><b>{% trans %}Score{% endtrans %}</b></td>
+            <th>{% trans %}User Name{% endtrans %}</th>
+            <th>{% trans %}Score{% endtrans %}</th>
           </tr>
           </thead>
           <tbody>
@@ -135,13 +135,13 @@
       <div class="row">
         <div class="col-md-12">
           <h3>{% trans %}Solves{% endtrans %}</h3>
-          <table class="table table-striped">
+          <table class="table table-striped align-middle">
             <thead>
             <tr>
-              <td class="text-center"><b>{% trans %}Challenge{% endtrans %}</b></td>
-              <td class="d-none d-md-block d-lg-block"><b>{% trans %}Category{% endtrans %}</b></td>
-              <td><b>{% trans %}Value{% endtrans %}</b></td>
-              <td><b>{% trans %}Time{% endtrans %}</b></td>
+              <th class="text-center">{% trans %}Challenge{% endtrans %}</th>
+              <th class="d-none d-md-block d-lg-block">{% trans %}Category{% endtrans %}</th>
+              <th>{% trans %}Value{% endtrans %}</th>
+              <th>{% trans %}Time{% endtrans %}</th>
             </tr>
             </thead>
             <tbody>
@@ -169,15 +169,15 @@
       <div class="row" x-data="TeamGraphs">
         <div class="col-md-6 d-none d-md-block d-lg-block py-4">
           <div class="progress">
-            <div 
-              class="progress-bar" 
-              role="progressbar" 
-              :style="{ width: `${getSolvePercentage()}%`, 'background-color': 'rgb(0, 209, 64)' }" 
+            <div
+              class="progress-bar"
+              role="progressbar"
+              :style="{ width: `${getSolvePercentage()}%`, 'background-color': 'rgb(0, 209, 64)' }"
             >
             </div>
-            <div 
-              class="progress-bar" 
-              role="progressbar" 
+            <div
+              class="progress-bar"
+              role="progressbar"
               :style="{ width: `${getFailPercentage()}%`, 'background-color': 'rgb(207, 38, 0)' }"
             >
             </div>
@@ -198,9 +198,9 @@
         <div class="col-md-6 d-none d-md-block d-lg-block py-4">
           <div class="progress">
             <template x-for="category in getCategoryBreakdown()" :key="category.name">
-              <div 
-                class="progress-bar" 
-                role="progressbar" 
+              <div
+                class="progress-bar"
+                role="progressbar"
                 :style="{ width: `${category.percent}%`, 'background-color': category.color }"
               >
               </div>
