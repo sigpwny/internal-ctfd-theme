@@ -10,6 +10,16 @@ git fetch upstream
 git merge upstream/main
 ```
 
+### Development
+
+To test locally with live-reload, you need to run `yarn dev` inside the CTFd docker container.
+
+Otherwise,
+
+```bash
+yarn install && yarn build
+```
+
 ## Subtree Installation
 
 ### Add repo to themes folder
