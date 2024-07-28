@@ -2,6 +2,14 @@
 
 Rewritten version of the CTFd core theme to use Bootstrap 5, Alpine.js, and vite to improve upon the existing CTFd theme structure. 
 
+## Updating
+
+```bash
+git remote add upstream git@github.com:CTFd/core-beta.git
+git fetch upstream
+git merge upstream/main
+```
+
 ## Subtree Installation
 
 ### Add repo to themes folder
