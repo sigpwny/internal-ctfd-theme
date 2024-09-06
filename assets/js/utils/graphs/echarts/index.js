@@ -33,8 +33,9 @@ echarts.use([
 ]);
 
 export function embed(target, option) {
-  let chart = echarts.init(target);
-  chart.setOption(option);
+  const chart = echarts.init(target);
+  // https://github.com/apache/echarts/issues/6202#issuecomment-315056486
+  chart.setOption(option, true);
 
   window.addEventListener("resize", () => {
     if (chart) {
